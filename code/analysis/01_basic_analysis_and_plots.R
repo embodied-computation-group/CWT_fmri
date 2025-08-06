@@ -114,5 +114,56 @@ p5 <- ggplot(confidence_by_accuracy, aes(x = Accuracy, y = mean_confidence)) +
 
 ggsave("results/figures/confidence_by_accuracy.png", p5, width = 8, height = 6)
 
+# 6. Task-specific analyses based on experimental design
+cat("\n=== TASK-SPECIFIC ANALYSES ===\n")
+
+# Accuracy by cue validity and stimulus noise
+accuracy_by_condition_detailed <- df %>%
+  group_by(TrialValidity2, StimNoise) %>%
+  summarise(accuracy = mean(Accuracy == "hit", na.rm = TRUE),
+            n_trials = n(),
+            mean_rt = mean(ResponseRT, na.rm = TRUE),
+            mean_confidence = mean(RawConfidence, na.rm = TRUE)) %>%
+  arrange(TrialValidity2, StimNoise)
+
+cat("Detailed accuracy by condition:\n")
+print(accuracy_by_condition_detailed)
+
+# Learning over trials since reversal
+learning_by_reversal <- df %>%
+  group_by(TrialsSinceRev) %>%
+  summarise(accuracy = mean(Accuracy == "hit", na.rm = TRUE),
+            n_trials = n()) %>%
+  filter(n_trials >= 10)  # Only show reversal points with sufficient data
+
+p6 <- ggplot(learning_by_reversal, aes(x = TrialsSinceRev, y = accuracy)) +
+  geom_line(color = "purple", size = 1) +
+  geom_point(color = "purple", alpha = 0.7) +
+  labs(title = "Learning After Probability Reversals",
+       x = "Trials Since Reversal", y = "Accuracy",
+       subtitle = "Shows adaptation to changing cue-face contingencies") +
+  theme_minimal() +
+  scale_y_continuous(labels = scales::percent)
+
+ggsave("results/figures/learning_after_reversals.png", p6, width = 10, height = 6)
+
+# Confidence by stimulus noise
+confidence_by_noise <- df %>%
+  group_by(StimNoise) %>%
+  summarise(mean_confidence = mean(RawConfidence, na.rm = TRUE),
+            se_confidence = sd(RawConfidence, na.rm = TRUE) / sqrt(n()))
+
+p7 <- ggplot(confidence_by_noise, aes(x = StimNoise, y = mean_confidence)) +
+  geom_bar(stat = "identity", fill = "darkgreen", alpha = 0.7) +
+  geom_errorbar(aes(ymin = mean_confidence - se_confidence, 
+                    ymax = mean_confidence + se_confidence), 
+                width = 0.2) +
+  labs(title = "Confidence by Stimulus Noise",
+       x = "Stimulus Noise", y = "Mean Confidence",
+       subtitle = "High noise = ambiguous faces, Low noise = clear faces") +
+  theme_minimal()
+
+ggsave("results/figures/confidence_by_noise.png", p7, width = 8, height = 6)
+
 cat("\nPlots saved to results/figures/\n")
 cat("Basic analysis complete!\n") 
