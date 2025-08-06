@@ -8,7 +8,7 @@ library(sjPlot)
 library(sjmisc)
 
 ##
-source("getdata.R")
+source("code/preprocessing/01_import_and_clean_data.R")
 
 df$RawConfidence <- df$RawConfidence/100 
 

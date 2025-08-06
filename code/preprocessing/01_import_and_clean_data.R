@@ -1,6 +1,6 @@
 library(readr)
 
-CWT_vmp1_master <- read_csv("CWT_vmp1_master.csv", na = "NaN")
+CWT_vmp1_master <- read_csv("data/raw/CWT_vmp1_master.csv", na = "NaN")
 
 str(CWT_vmp1_master)
 

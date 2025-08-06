@@ -8,155 +8,120 @@ This repository contains the analysis pipeline for a Continuous Wavelet Transfor
 
 ```
 CWT_fmri/
-├── CWT_fmri.Rproj          # RStudio project file
-├── CWT_vmp1_master.csv     # Main behavioral dataset (53,593 trials)
-├── CWT_VMP1_master_table.mat           # MATLAB format data
-├── CWT_VMP1_master_table_extended.mat  # Extended MATLAB format data
-├── model_data.txt           # Processed data for computational modeling (48,200 trials)
-├── getdata.R               # Data preprocessing and cleaning script
-├── glmer_analysis.R        # Main statistical analysis script
-├── run_anovas.R           # ANOVA analyses
-├── computational_modeling.R # Reinforcement learning models (hBayesDM)
-└── .Rhistory              # R command history
+├── data/
+│   ├── raw/                    # Original data files
+│   │   ├── CWT_vmp1_master.csv
+│   │   ├── CWT_VMP1_master_table.mat
+│   │   └── CWT_VMP1_master_table_extended.mat
+│   └── processed/              # Processed data files
+│       └── model_data.txt
+├── code/
+│   ├── preprocessing/          # Data preparation scripts
+│   │   └── 01_import_and_clean_data.R
+│   ├── analysis/              # Statistical analysis scripts
+│   │   ├── 01_basic_analysis_and_plots.R
+│   │   ├── 02_run_glmm_models.R
+│   │   └── 03_run_anova_analyses.R
+│   └── modeling/              # Computational modeling scripts
+│       └── 04_run_computational_models.R
+├── results/
+│   ├── figures/               # Generated plots
+│   ├── tables/                # Output tables
+│   └── models/                # Model results
+└── README.md
 ```
+
+## Analysis Pipeline
+
+The analysis is designed as a series of simple, standalone scripts that can be run in sequence:
+
+### 1. Data Import and Cleaning
+```r
+source("code/preprocessing/01_import_and_clean_data.R")
+```
+- Loads raw CSV data
+- Cleans and recodes variables
+- Creates the main data frame `df`
+
+### 2. Basic Analysis and Plots
+```r
+source("code/analysis/01_basic_analysis_and_plots.R")
+```
+- Creates descriptive statistics
+- Generates basic plots (accuracy, RT, confidence distributions)
+- Saves figures to `results/figures/`
+
+### 3. GLMM Analysis
+```r
+source("code/analysis/02_run_glmm_models.R")
+```
+- Fits mixed-effects models for confidence, accuracy, and RT
+- Uses ordered beta regression for confidence
+- Uses binomial logistic regression for accuracy
+- Uses gamma regression for response times
+
+### 4. ANOVA Analysis
+```r
+source("code/analysis/03_run_anova_analyses.R")
+```
+- Runs traditional ANOVA analyses
+- Provides additional statistical tests
+
+### 5. Computational Modeling
+```r
+source("code/modeling/04_run_computational_models.R")
+```
+- Fits reinforcement learning models using hBayesDM
+- Uses ug_delta model for uncertainty-guided learning
+- Saves model results to `results/models/`
 
 ## Data Flow
 
-### 1. Raw Data Sources
-- **Primary Dataset**: `CWT_vmp1_master.csv` (53,593 trials)
-  - Contains behavioral data from face emotion recognition task
-  - Includes 15 variables: SubNo, TrialNo, NonPred, TrialValidity, StimNoise, Accuracy, PredictionRT, RawConfidence, ConfidenceRT, TrialsSinceRev, U, Y, CueImg, FaceEmot, PredictResp
+### Raw Data → Processed Data
+- **Input**: `data/raw/CWT_vmp1_master.csv` (53,593 trials)
+- **Processing**: Variable recoding, filtering, factor conversion
+- **Output**: Clean data frame `df` with 15 variables
 
-### 2. Data Preprocessing (`getdata.R`)
-The preprocessing pipeline performs the following transformations:
-
-- **Data Cleaning**:
-  - Filters out trials with PredictResp = 888 (error trials)
-  - Removes trials with RawConfidence = 888 (error trials)
-  - Converts categorical variables to factors
-
-- **Variable Recoding**:
-  - `StimNoise`: 0 → "low noise", 1 → "high noise"
-  - `TrialValidity`: 0 → "Invalid", 1 → "Valid"
-  - `FaceResponse`: 0 → "Angry", 1 → "Happy"
-  - `FaceEmot`: 0 → "Angry", 1 → "Happy"
-  - `TrialValidity2`: Creates "non-predictive" category for NonPred = 1 trials
-
-- **Variable Renaming**:
-  - `PredictionRT` → `ResponseRT`
-  - `PredictResp` → `FaceResponse`
-
-### 3. Statistical Analysis (`glmer_analysis.R`)
-
-The main analysis script implements several mixed-effects models:
-
-#### Confidence Models
-- **Ordered Beta Regression** for confidence ratings (0-1 scale)
-- Models include random effects for subjects and various fixed effects
-- Key predictors: TrialValidity2, StimNoise, TrialsSinceRev, Accuracy
-
-#### Accuracy Models
-- **Binomial Logistic Regression** for binary accuracy outcomes
-- Predictors: TrialValidity2, StimNoise, FaceEmot, CueImg
-- Random effects for subjects
-
-#### Response Time Models
-- **Gamma Regression** for response times
-- Predictors: StimNoise, TrialValidity2
-- Random effects for subjects
-
-#### Choice Models
-- **Binomial Logistic Regression** for face response choices
-- Focuses on high noise trials only
-- Predictors: SignaledFace, FaceEmot, TrialsSinceRev
-
-### 4. Computational Modeling (`computational_modeling.R`)
-- Implements reinforcement learning models using `hBayesDM`
-- Creates `model_data.txt` for computational modeling
-- Uses `ug_delta` model for uncertainty-guided learning
-- Includes comprehensive data preparation and model fitting functions
-- Provides parameter interpretation and model diagnostics
+### Processed Data → Analysis Results
+- **Basic Analysis**: Descriptive stats and plots
+- **GLMM Models**: Mixed-effects models for different outcomes
+- **Computational Models**: Reinforcement learning models
 
 ## Key Variables
 
-### Experimental Design Variables
+### Experimental Design
 - **SubNo**: Subject identifier
 - **TrialNo**: Trial number within session
-- **TrialValidity**: Whether the cue correctly predicts the face emotion (0=Invalid, 1=Valid)
-- **StimNoise**: Noise level in stimulus presentation (0=low, 1=high)
-- **NonPred**: Non-predictive trials (1=non-predictive)
+- **TrialValidity**: Whether cue correctly predicts face emotion (0=Invalid, 1=Valid)
+- **StimNoise**: Noise level in stimulus (0=low, 1=high)
 - **TrialsSinceRev**: Number of trials since last reversal
 
 ### Stimulus Variables
 - **CueImg**: Cue image type (0/1)
-- **FaceEmot**: Actual face emotion presented (0=Angry, 1=Happy)
-- **U, Y**: Additional experimental variables
+- **FaceEmot**: Actual face emotion (0=Angry, 1=Happy)
 
 ### Response Variables
 - **Accuracy**: Binary accuracy (0=miss, 1=hit)
 - **ResponseRT**: Response time in seconds
-- **RawConfidence**: Raw confidence rating (0-100, scaled to 0-1)
-- **FaceResponse**: Participant's face emotion choice (0=Angry, 1=Happy)
-
-## Analysis Highlights
-
-### 1. Confidence Analysis
-- Uses ordered beta regression to model confidence ratings
-- Examines effects of trial validity, stimulus noise, and learning over time
-- Includes subject-level random effects for individual differences
-
-### 2. Accuracy Analysis
-- Models binary accuracy outcomes
-- Tests effects of cue validity, stimulus noise, and face emotion
-- Accounts for subject-level variability
-
-### 3. Response Time Analysis
-- Gamma regression for positively skewed RT distributions
-- Examines effects of stimulus noise and trial validity
-- Includes subject-level random effects
-
-### 4. Choice Analysis
-- Focuses on high noise trials for choice modeling
-- Tests how signaled vs. shown faces influence choices
-- Examines learning effects over trials since reversal
-
-## Technical Details
-
-### Software Dependencies
-- **R** with packages: `lme4`, `lmerTest`, `ordinal`, `glmmTMB`, `tidyverse`, `DHARMa`, `sjPlot`, `sjmisc`, `hBayesDM`
-- **MATLAB** for additional data processing (`.mat` files)
-
-### Model Specifications
-- **Mixed-effects models** with subject-level random effects
-- **Ordered beta regression** for bounded confidence data
-- **Gamma regression** for response times
-- **Binomial logistic regression** for accuracy and choice data
-
-### Data Quality
-- Original dataset: 53,593 trials
-- Processed dataset: 48,200 trials (after filtering)
-- Multiple subjects with repeated measures design
-
-## Research Context
-
-This project appears to investigate:
-1. **Predictive processing** in face emotion recognition
-2. **Learning dynamics** over trial sequences
-3. **Confidence calibration** in uncertain environments
-4. **Response adaptation** to changing stimulus statistics
-
-The experimental design suggests a reversal learning paradigm where participants must adapt to changing cue-face contingencies, with particular focus on how confidence and accuracy change as a function of stimulus noise and cue validity.
+- **RawConfidence**: Confidence rating (0-1)
+- **FaceResponse**: Participant's choice (0=Angry, 1=Happy)
 
 ## Usage
 
-1. **Data Preprocessing**: Run `getdata.R` to clean and prepare the dataset
-2. **Main Analysis**: Execute `glmer_analysis.R` for statistical modeling
-3. **Additional Analyses**: Use `run_anovas.R` for ANOVA-based analyses
-4. **Computational Modeling**: Run `computational_modeling.R` for reinforcement learning models
+1. **Start with data import**: Run `01_import_and_clean_data.R`
+2. **Basic exploration**: Run `01_basic_analysis_and_plots.R`
+3. **Main analysis**: Run `02_run_glmm_models.R`
+4. **Additional tests**: Run `03_run_anova_analyses.R`
+5. **Computational modeling**: Run `04_run_computational_models.R`
+
+## Dependencies
+
+- **R** with packages: `tidyverse`, `lme4`, `lmerTest`, `ordinal`, `glmmTMB`, `DHARMa`, `sjPlot`, `sjmisc`, `hBayesDM`, `ggplot2`
+- **MATLAB** for additional data processing (`.mat` files)
 
 ## Notes
 
-- The repository contains both R and MATLAB data formats
-- Some analysis files are marked as "trash" but contain useful modeling approaches
-- The project uses modern mixed-effects modeling approaches for hierarchical data
-- Confidence ratings are modeled using ordered beta regression, appropriate for bounded continuous data 
+- Each script is standalone and can be run independently
+- Scripts are numbered for suggested execution order
+- Results are automatically saved to appropriate directories
+- All scripts include progress messages for easy debugging 
