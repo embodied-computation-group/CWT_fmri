@@ -1,0 +1,25 @@
+# R specific files
+.RData
+.Rhistory
+.Rapp.history
+
+# RStudio files
+.Rproj.user/
+
+# Temporary files
+*.tmp
+*.temp
+
+# Large data files (consider using Git LFS for these)
+# Uncomment if you want to exclude large data files
+# *.csv
+# *.mat
+# *.txt
+
+# OS specific files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/ 
