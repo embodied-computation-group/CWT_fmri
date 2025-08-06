@@ -16,8 +16,9 @@ CWT_fmri/
 ├── getdata.R               # Data preprocessing and cleaning script
 ├── glmer_analysis.R        # Main statistical analysis script
 ├── run_anovas.R           # ANOVA analyses
-├── trash.R                 # Computational modeling attempts
-├── trash2.R                # Additional modeling code
+├── computational_modeling.R # Reinforcement learning models (hBayesDM)
+├── trash.R                 # Computational modeling attempts (deprecated)
+├── trash2.R                # Additional modeling code (deprecated)
 └── .Rhistory              # R command history
 ```
 
@@ -71,10 +72,12 @@ The main analysis script implements several mixed-effects models:
 - Focuses on high noise trials only
 - Predictors: SignaledFace, FaceEmot, TrialsSinceRev
 
-### 4. Computational Modeling (`trash.R`, `trash2.R`)
-- Attempts to fit reinforcement learning models using `hBayesDM`
+### 4. Computational Modeling (`computational_modeling.R`)
+- Implements reinforcement learning models using `hBayesDM`
 - Creates `model_data.txt` for computational modeling
 - Uses `ug_delta` model for uncertainty-guided learning
+- Includes comprehensive data preparation and model fitting functions
+- Provides parameter interpretation and model diagnostics
 
 ## Key Variables
 
@@ -122,7 +125,7 @@ The main analysis script implements several mixed-effects models:
 ## Technical Details
 
 ### Software Dependencies
-- **R** with packages: `lme4`, `lmerTest`, `ordinal`, `glmmTMB`, `tidyverse`, `DHARMa`, `sjPlot`, `sjmisc`
+- **R** with packages: `lme4`, `lmerTest`, `ordinal`, `glmmTMB`, `tidyverse`, `DHARMa`, `sjPlot`, `sjmisc`, `hBayesDM`
 - **MATLAB** for additional data processing (`.mat` files)
 
 ### Model Specifications
@@ -151,7 +154,7 @@ The experimental design suggests a reversal learning paradigm where participants
 1. **Data Preprocessing**: Run `getdata.R` to clean and prepare the dataset
 2. **Main Analysis**: Execute `glmer_analysis.R` for statistical modeling
 3. **Additional Analyses**: Use `run_anovas.R` for ANOVA-based analyses
-4. **Computational Modeling**: Run `trash2.R` for reinforcement learning models
+4. **Computational Modeling**: Run `computational_modeling.R` for reinforcement learning models
 
 ## Notes
 
