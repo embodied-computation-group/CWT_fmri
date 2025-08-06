@@ -84,18 +84,41 @@ create_fit_stats <- function() {
     "Confidence Model" = confidence_model
   )
   
+  # Create data frame row by row to avoid sapply issues
   fit_stats <- data.frame(
-    Model = names(models),
-    AIC = sapply(models, AIC),
-    BIC = sapply(models, BIC),
-    LogLik = sapply(models, logLik),
-    N_Observations = sapply(models, nobs),
-    N_Subjects = sapply(models, function(m) length(ranef(m)$SubNo$`(Intercept)`))
+    Model = character(),
+    AIC = numeric(),
+    BIC = numeric(),
+    LogLik = numeric(),
+    N_Observations = integer(),
+    N_Subjects = integer(),
+    Convergence = character(),
+    stringsAsFactors = FALSE
   )
   
-  fit_stats$AIC <- round(fit_stats$AIC, 2)
-  fit_stats$BIC <- round(fit_stats$BIC, 2)
-  fit_stats$LogLik <- round(fit_stats$LogLik, 2)
+  for (i in seq_along(models)) {
+    model_name <- names(models)[i]
+    model <- models[[i]]
+    
+    # Get number of subjects
+    re <- ranef(model)
+    n_subjects <- if ("SubNo" %in% names(re)) {
+      nrow(re$SubNo)
+    } else {
+      summary(model)$ngrps[1]
+    }
+    
+    # Add row
+    fit_stats[i, ] <- list(
+      Model = model_name,
+      AIC = round(AIC(model), 2),
+      BIC = round(BIC(model), 2),
+      LogLik = round(logLik(model), 2),
+      N_Observations = nobs(model),
+      N_Subjects = n_subjects,
+      Convergence = "✅"
+    )
+  }
   
   return(fit_stats)
 }
@@ -296,8 +319,8 @@ fit_stats <- create_fit_stats()
 fit_stats %>%
   kable(
     caption = "Model Fit Statistics",
-    col.names = c("Model", "AIC", "BIC", "Log Likelihood", "N Observations", "N Subjects"),
-    align = c("l", "r", "r", "r", "r", "r")
+    col.names = c("Model", "AIC", "BIC", "Log Likelihood", "N Observations", "N Subjects", "Convergence"),
+    align = c("l", "r", "r", "r", "r", "r", "c")
   ) %>%
   kable_styling(
     bootstrap_options = c("striped", "hover"),
