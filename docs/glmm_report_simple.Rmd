@@ -14,6 +14,9 @@ output:
     fig_height: 6
     fig_caption: true
     df_print: kable
+    css: "dark-mode.css"
+    includes:
+      in_header: "dark-mode-header.html"
 ---
 
 ```{r setup, include=FALSE}
@@ -54,7 +57,8 @@ extract_model_stats <- function(model, model_name) {
     TRUE ~ ""
   )
   
-  # Format for display
+  # Format for display - fix column order
+  coef_table <- coef_table[, c("Parameter", "Estimate", "Std. Error", "z value", "Pr(>|z|)", "Significance")]
   coef_table$Estimate <- round(coef_table$Estimate, 4)
   coef_table$`Std. Error` <- round(coef_table$`Std. Error`, 4)
   coef_table$`z value` <- round(coef_table$`z value`, 3)
@@ -112,6 +116,13 @@ This report presents the results of four Generalized Linear Mixed Models (GLMMs)
 
 **Research Question:** How does trial validity and learning affect accuracy in high-noise trials?
 
+**Model Specification:**
+```
+Accuracy ~ TrialValidity2_numeric * TrialsSinceRev_scaled * FaceEmot + (1 | SubNo)
+Family: binomial(link = "logit")
+Data: High noise trials only
+```
+
 ```{r accuracy-stats}
 accuracy_stats <- extract_model_stats(accuracy_model, "Accuracy Model")
 accuracy_stats %>%
@@ -144,6 +155,13 @@ knitr::include_graphics("../results/figures/glmm_models/glmm_accuracy_model.png"
 ### 2. Choice Model (High Noise Trials Only)
 
 **Research Question:** How do signaled faces and actual emotions influence choice behavior?
+
+**Model Specification:**
+```
+FaceResponse ~ SignaledFace * FaceEmot * TrialsSinceRev_scaled + (1 | SubNo)
+Family: binomial(link = "logit")
+Data: High noise trials only
+```
 
 ```{r choice-stats}
 choice_stats <- extract_model_stats(choice_model, "Choice Model")
@@ -178,6 +196,13 @@ knitr::include_graphics("../results/figures/glmm_models/glmm_choice_model.png")
 
 **Research Question:** How do stimulus noise and trial validity affect response times?
 
+**Model Specification:**
+```
+ResponseRT ~ StimNoise * TrialValidity2_numeric * TrialsSinceRev_scaled + (1 | SubNo)
+Family: Gamma(link = "log")
+Data: All trials
+```
+
 ```{r rt-stats}
 rt_stats <- extract_model_stats(rt_model, "Response Time Model")
 rt_stats %>%
@@ -210,6 +235,13 @@ knitr::include_graphics("../results/figures/glmm_models/glmm_rt_model.png")
 ### 4. Confidence Model (All Trials)
 
 **Research Question:** How do trial validity and stimulus noise affect confidence ratings?
+
+**Model Specification:**
+```
+RawConfidence ~ TrialValidity2_numeric * StimNoise * TrialsSinceRev_scaled + FaceEmot + (1 | SubNo)
+Family: Beta(link = "logit")
+Data: All trials
+```
 
 ```{r confidence-stats}
 confidence_stats <- extract_model_stats(confidence_model, "Confidence Model")

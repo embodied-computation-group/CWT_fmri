@@ -1,0 +1,30 @@
+<!-- Dark Mode Toggle -->
+<button class="dark-mode-toggle" onclick="toggleDarkMode()">🌙 Dark Mode</button>
+
+<script>
+function toggleDarkMode() {
+  const body = document.body;
+  const button = document.querySelector('.dark-mode-toggle');
+  
+  if (body.getAttribute('data-theme') === 'dark') {
+    body.removeAttribute('data-theme');
+    button.textContent = '🌙 Dark Mode';
+    localStorage.setItem('theme', 'light');
+  } else {
+    body.setAttribute('data-theme', 'dark');
+    button.textContent = '☀️ Light Mode';
+    localStorage.setItem('theme', 'dark');
+  }
+}
+
+// Check for saved theme preference
+document.addEventListener('DOMContentLoaded', function() {
+  const savedTheme = localStorage.getItem('theme');
+  const button = document.querySelector('.dark-mode-toggle');
+  
+  if (savedTheme === 'dark') {
+    document.body.setAttribute('data-theme', 'dark');
+    button.textContent = '☀️ Light Mode';
+  }
+});
+</script> 

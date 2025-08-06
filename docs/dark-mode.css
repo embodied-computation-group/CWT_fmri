@@ -1,0 +1,80 @@
+/* Dark Mode Styles */
+:root {
+  --bg-color: #ffffff;
+  --text-color: #333333;
+  --header-color: #2c3e50;
+  --table-header-bg: #3498db;
+  --table-row-bg: #f8f9fa;
+  --table-row-hover: #e3f2fd;
+  --border-color: #dee2e6;
+  --code-bg: #f8f9fa;
+}
+
+[data-theme="dark"] {
+  --bg-color: #1a1a1a;
+  --text-color: #e0e0e0;
+  --header-color: #ffffff;
+  --table-header-bg: #2c3e50;
+  --table-row-bg: #2d2d2d;
+  --table-row-hover: #3a3a3a;
+  --border-color: #444444;
+  --code-bg: #2d2d2d;
+}
+
+body {
+  background-color: var(--bg-color) !important;
+  color: var(--text-color) !important;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--header-color) !important;
+}
+
+.table th {
+  background-color: var(--table-header-bg) !important;
+}
+
+.table tbody tr:nth-child(even) {
+  background-color: var(--table-row-bg) !important;
+}
+
+.table tbody tr:hover {
+  background-color: var(--table-row-hover) !important;
+}
+
+.table td, .table th {
+  border-color: var(--border-color) !important;
+}
+
+.sourceCode {
+  background-color: var(--code-bg) !important;
+}
+
+/* Dark mode toggle button */
+.dark-mode-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  background: #3498db;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+.dark-mode-toggle:hover {
+  background: #2980b9;
+}
+
+[data-theme="dark"] .dark-mode-toggle {
+  background: #e74c3c;
+}
+
+[data-theme="dark"] .dark-mode-toggle:hover {
+  background: #c0392b;
+} 
