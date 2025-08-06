@@ -77,7 +77,7 @@ model <- glmmTMB(
   control = control_options)
 
 
-conf_fit2 <- glmmTMB(RawConfidence ~ TrialsSinceRev*CueValidity + (1 + StimNoise | SubNo),
+conf_fit2 <- glmmTMB(RawConfidence ~ TrialsSinceRev*TrialValidity2 + (1 + StimNoise | SubNo),
                      data=df,
                      family=ordbeta(),
                      start=list(psi = c(0, 1)), 
@@ -109,7 +109,7 @@ modelplot + theme_minimal()
 
 # RTs
 df_rt <- df %>% 
-  na.omit(). # seems to need to happen for it to work
+  na.omit() # seems to need to happen for it to work
 
 rtmodel <- glmmTMB(ResponseRT ~ StimNoise * TrialValidity2  +
                                           (1 +FaceEmot + StimNoise | SubNo ), 
@@ -136,7 +136,7 @@ modelplot + theme_minimal()
 
 
 
-confmodel <- glmmTMB(Confidence ~  TrialValidity2*StimNoise  +
+confmodel <- glmmTMB(RawConfidence ~  TrialValidity2*StimNoise  +
                      (1 +FaceEmot | SubNo ), 
                    data = df)
 
