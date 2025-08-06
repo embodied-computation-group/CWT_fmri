@@ -4,6 +4,10 @@
 
 This document describes the experimental design for the CWT fMRI study investigating predictive processing in face emotion recognition. The task involves learning associations between predictive cues and emotional faces, with confidence ratings and dynamic probability changes.
 
+![Experimental Design](experimental_design.png)
+
+*Figure: Experimental design showing face noise thresholding (A), trial sequence (B), and trial-by-trial stimulus presentation (C).*
+
 ## Task Structure
 
 ### A. Face Noise Thresholding

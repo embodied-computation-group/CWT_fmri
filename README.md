@@ -4,7 +4,7 @@
 
 This repository contains the analysis pipeline for a Continuous Wavelet Transform (CWT) fMRI study investigating predictive processing in face emotion recognition. The project examines how participants learn to predict emotional faces based on predictive cues, with a focus on confidence, accuracy, and response time measures.
 
-**📋 Experimental Design**: See [`docs/experimental_design.md`](docs/experimental_design.md) for detailed task description and stimulus structure.
+**📋 Experimental Design**: See [`docs/experimental_design.md`](docs/experimental_design.md) for detailed task description and stimulus structure, including visual diagram of the experimental design.
 
 ## Project Structure
 
