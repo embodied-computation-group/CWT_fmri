@@ -62,7 +62,15 @@ extract_model_stats <- function(model, model_name) {
   coef_table$Estimate <- round(coef_table$Estimate, 4)
   coef_table$`Std. Error` <- round(coef_table$`Std. Error`, 4)
   coef_table$`z value` <- round(coef_table$`z value`, 3)
-  coef_table$`Pr(>|z|)` <- format(coef_table$`Pr(>|z|)`, scientific = TRUE, digits = 3)
+  
+  # Format p-values properly - use scientific notation only for very small values
+  coef_table$`Pr(>|z|)` <- sapply(coef_table$`Pr(>|z|)`, function(p) {
+    if (p < 0.001) {
+      format(p, scientific = TRUE, digits = 3)
+    } else {
+      format(p, scientific = FALSE, digits = 4)
+    }
+  })
   
   return(coef_table)
 }
