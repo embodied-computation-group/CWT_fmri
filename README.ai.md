@@ -41,7 +41,13 @@ CWT_fmri/
 │   └── models/                # Model results (.rds files)
 ├── docs/
 │   ├── experimental_design.md # Task description and stimulus structure
-│   └── experimental_design.png
+│   ├── experimental_design.png
+│   ├── glmm_report_simple.Rmd # Reproducible GLMM analysis report
+│   ├── glmm_report.html # Generated HTML report with dark mode
+│   ├── render_report.R # Script to regenerate the report
+│   ├── dark-mode.css # Dark mode styling
+│   ├── dark-mode-header.html # Dark mode toggle functionality
+│   └── README.md # Documentation for the docs directory
 └── README.md                  # Main project documentation
 ```
 
@@ -144,6 +150,36 @@ CWT_fmri/
 4. **ANOVA Analysis**: `code/analysis/03_run_anova_analyses.R`
 5. **Computational Modeling**: `code/modeling/04_run_computational_models.R`
 
+## Recent Work: GLMM Analysis Report
+
+A comprehensive, reproducible report has been created for the GLMM analysis:
+
+### Report Features
+- **Reproducible**: Loads pre-estimated models from `results/models/`
+- **Dynamic**: Extracts coefficients and fit statistics programmatically
+- **Professional**: Clean HTML output with interactive tables
+- **Accessible**: Dark mode toggle for comfortable viewing
+- **Self-contained**: All figures embedded, no external dependencies
+
+### Key Files
+- `docs/glmm_report_simple.Rmd`: R Markdown source (reproducible)
+- `docs/glmm_report.html`: Generated HTML report (viewable)
+- `docs/render_report.R`: Regeneration script
+- `docs/dark-mode.css` & `docs/dark-mode-header.html`: Dark mode styling
+
+### Report Content
+- **Model Specifications**: Exact formulas for each GLMM
+- **Coefficient Tables**: Properly aligned with correct p-values
+- **Fit Statistics**: AIC, BIC, Log-likelihood, N observations/subjects
+- **Embedded Figures**: All GLMM model plots from `results/figures/glmm_models/`
+- **Key Findings**: Summary of main results for each model
+
+### User Feedback Addressed
+- ✅ **Table Alignment**: Fixed column shifting issue with p-values
+- ✅ **Model Specifications**: Added exact formulas before each table
+- ✅ **Dark Mode**: Implemented toggle with persistent preferences
+- ✅ **Professional Styling**: Clean, publication-ready appearance
+
 ## Technical Notes
 
 ### R Packages Required
@@ -156,6 +192,9 @@ library(tidyverse)
 library(DHARMa)
 library(sjPlot)
 library(sjmisc)
+library(knitr)
+library(kableExtra)
+library(rmarkdown)
 ```
 
 ### Data Preprocessing Steps
@@ -211,6 +250,11 @@ results/
 5. **Computational Modeling** (`04_run_computational_models.R`)
    → Saves model fits to `results/models/`
    → Saves plots to `results/figures/`
+
+6. **Report Generation** (`docs/render_report.R`)
+   → Loads models from `results/models/`
+   → Embeds figures from `results/figures/glmm_models/`
+   → Generates `docs/glmm_report.html`
 
 ### Output File Naming Conventions
 - **Plots**: Descriptive names with analysis type prefix (e.g., `glmm_accuracy_model.png`)

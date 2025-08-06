@@ -42,7 +42,13 @@ CWT_fmri/
 │   └── models/                # Model results (.rds files)
 ├── docs/
 │   ├── experimental_design.md # Task description and stimulus structure
-│   └── experimental_design.png
+│   ├── experimental_design.png
+│   ├── glmm_report_simple.Rmd # Reproducible GLMM analysis report
+│   ├── glmm_report.html # Generated HTML report with dark mode
+│   ├── render_report.R # Script to regenerate the report
+│   ├── dark-mode.css # Dark mode styling
+│   ├── dark-mode-header.html # Dark mode toggle functionality
+│   └── README.md # Documentation for the docs directory
 └── README.md
 ```
 
@@ -115,6 +121,37 @@ source("code/modeling/04_run_computational_models.R")
 - Fits reinforcement learning models using hBayesDM
 - Uses ug_delta model for uncertainty-guided learning
 - Saves model results to `results/models/`
+
+## GLMM Analysis Report
+
+A comprehensive, reproducible report of the GLMM analysis is available in the `docs/` directory:
+
+### Interactive HTML Report
+- **File**: `docs/glmm_report.html`
+- **Features**: 
+  - Dynamic tables with model coefficients and fit statistics
+  - Embedded figures from existing analysis
+  - Dark mode toggle for comfortable viewing
+  - Professional styling with interactive elements
+  - Self-contained (no external dependencies)
+
+### Reproducible Source
+- **File**: `docs/glmm_report_simple.Rmd`
+- **Features**:
+  - Loads pre-estimated models from `results/models/`
+  - Extracts coefficients and fit statistics programmatically
+  - Embeds existing figures from `results/figures/glmm_models/`
+  - Updates automatically when analysis changes
+
+### Regeneration
+To update the report after analysis changes:
+```r
+# From project root
+cd docs
+Rscript render_report.R
+```
+
+**View Online**: The report is hosted on GitHub Pages and can be viewed directly in your browser.
 
 ## Key Variables
 
@@ -203,6 +240,11 @@ library(hBayesDM)
 
 ### Tables
 - `results/tables/`: CSV and HTML output tables
+
+### Reports
+- `docs/glmm_report.html`: Interactive HTML report with dark mode
+- `docs/glmm_report_simple.Rmd`: Reproducible R Markdown source
+- `docs/render_report.R`: Script to regenerate the report
 
 ## Notes
 
