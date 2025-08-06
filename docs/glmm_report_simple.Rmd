@@ -1,0 +1,296 @@
+---
+title: "CWT fMRI Study - GLMM Analysis Report"
+subtitle: "Predictive Processing in Emotion Recognition"
+author: "CWT fMRI Analysis Team"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    theme: cosmo
+    highlight: tango
+    code_folding: hide
+    fig_width: 10
+    fig_height: 6
+    fig_caption: true
+    df_print: kable
+---
+
+```{r setup, include=FALSE}
+# Load required libraries
+library(tidyverse)
+library(lme4)
+library(knitr)
+library(kableExtra)
+
+# Set global options
+knitr::opts_chunk$set(
+  echo = FALSE,
+  warning = FALSE,
+  message = FALSE,
+  fig.width = 10,
+  fig.height = 6,
+  dpi = 300
+)
+
+# Load pre-estimated models
+accuracy_model <- readRDS("../results/models/accuracy_model_simple.rds")
+choice_model <- readRDS("../results/models/choice_model_simple.rds")
+rt_model <- readRDS("../results/models/rt_model_simple.rds")
+confidence_model <- readRDS("../results/models/confidence_model_simple.rds")
+
+# Function to extract model statistics
+extract_model_stats <- function(model, model_name) {
+  summary_obj <- summary(model)
+  coef_table <- as.data.frame(summary_obj$coefficients$cond)
+  coef_table$Parameter <- rownames(coef_table)
+  
+  # Add significance stars
+  coef_table$Significance <- case_when(
+    coef_table$`Pr(>|z|)` < 0.001 ~ "***",
+    coef_table$`Pr(>|z|)` < 0.01 ~ "**",
+    coef_table$`Pr(>|z|)` < 0.05 ~ "*",
+    coef_table$`Pr(>|z|)` < 0.1 ~ ".",
+    TRUE ~ ""
+  )
+  
+  # Format for display
+  coef_table$Estimate <- round(coef_table$Estimate, 4)
+  coef_table$`Std. Error` <- round(coef_table$`Std. Error`, 4)
+  coef_table$`z value` <- round(coef_table$`z value`, 3)
+  coef_table$`Pr(>|z|)` <- format(coef_table$`Pr(>|z|)`, scientific = TRUE, digits = 3)
+  
+  return(coef_table)
+}
+
+# Function to create fit statistics table
+create_fit_stats <- function() {
+  models <- list(
+    "Accuracy Model" = accuracy_model,
+    "Choice Model" = choice_model,
+    "Response Time Model" = rt_model,
+    "Confidence Model" = confidence_model
+  )
+  
+  fit_stats <- data.frame(
+    Model = names(models),
+    AIC = sapply(models, AIC),
+    BIC = sapply(models, BIC),
+    LogLik = sapply(models, logLik),
+    N_Observations = sapply(models, nobs),
+    N_Subjects = sapply(models, function(m) length(ranef(m)$SubNo$`(Intercept)`))
+  )
+  
+  fit_stats$AIC <- round(fit_stats$AIC, 2)
+  fit_stats$BIC <- round(fit_stats$BIC, 2)
+  fit_stats$LogLik <- round(fit_stats$LogLik, 2)
+  
+  return(fit_stats)
+}
+```
+
+## Study Overview
+
+This report presents the results of four Generalized Linear Mixed Models (GLMMs) examining predictive processing in emotion recognition using a confidence weighting task.
+
+**Participants:** 202 subjects  
+**Total Trials:** 53,592 (48,199 after filtering)  
+**Task:** Predict emotional faces (Happy/Angry) based on visual cues in a reversal learning paradigm
+
+### Experimental Design
+
+- **Trial Validity:** Valid vs Invalid vs Non-predictive trials
+- **Stimulus Noise:** High noise (ambiguous) vs Low noise (clear) faces
+- **Learning:** Trials since reversal (learning dynamics)
+- **Face Emotion:** Happy vs Angry faces
+
+---
+
+## Model Results
+
+### 1. Accuracy Model (High Noise Trials Only)
+
+**Research Question:** How does trial validity and learning affect accuracy in high-noise trials?
+
+```{r accuracy-stats}
+accuracy_stats <- extract_model_stats(accuracy_model, "Accuracy Model")
+accuracy_stats %>%
+  kable(
+    caption = "Accuracy Model Coefficients",
+    col.names = c("Parameter", "Estimate", "Std. Error", "z-value", "p-value", "Significance"),
+    align = c("l", "r", "r", "r", "r", "c")
+  ) %>%
+  kable_styling(
+    bootstrap_options = c("striped", "hover"),
+    full_width = TRUE,
+    font_size = 12
+  ) %>%
+  column_spec(6, color = "red", bold = TRUE)
+```
+
+**Key Findings:**
+- ✅ **Trial Validity:** Valid trials show significantly higher accuracy (z = 5.03, p < 0.001)
+- ❌ **Face Emotion:** Happy faces show lower accuracy than angry faces (z = -7.14, p < 0.001)
+- 🔄 **Learning:** Trial validity effects change with learning (interaction: z = 2.18, p = 0.030)
+
+**Interpretation:** Participants are more accurate when cues correctly predict the face emotion, but this effect changes over time as they learn the task contingencies.
+
+```{r accuracy-plot, fig.cap="Accuracy Model Predictions: Trial Validity × Trials Since Reversal × Face Emotion"}
+knitr::include_graphics("../results/figures/glmm_models/glmm_accuracy_model.png")
+```
+
+---
+
+### 2. Choice Model (High Noise Trials Only)
+
+**Research Question:** How do signaled faces and actual emotions influence choice behavior?
+
+```{r choice-stats}
+choice_stats <- extract_model_stats(choice_model, "Choice Model")
+choice_stats %>%
+  kable(
+    caption = "Choice Model Coefficients",
+    col.names = c("Parameter", "Estimate", "Std. Error", "z-value", "p-value", "Significance"),
+    align = c("l", "r", "r", "r", "r", "c")
+  ) %>%
+  kable_styling(
+    bootstrap_options = c("striped", "hover"),
+    full_width = TRUE,
+    font_size = 12
+  ) %>%
+  column_spec(6, color = "red", bold = TRUE)
+```
+
+**Key Findings:**
+- 🎯 **Signaled Face:** Angry signaled faces reduce choice of angry (z = -5.23, p < 0.001)
+- 😊 **Actual Emotion:** Happy faces strongly predict happy choices (z = 36.38, p < 0.001)
+- 🔄 **Learning:** Learning effects interact with signaled face (z = -4.10, p < 0.001)
+
+**Interpretation:** Participants use predictive cues to guide their choices, but also respond strongly to the actual face emotion. Learning modulates these effects.
+
+```{r choice-plot, fig.cap="Choice Model Predictions: Signaled Face × Face Emotion × Trials Since Reversal"}
+knitr::include_graphics("../results/figures/glmm_models/glmm_choice_model.png")
+```
+
+---
+
+### 3. Response Time Model (All Trials)
+
+**Research Question:** How do stimulus noise and trial validity affect response times?
+
+```{r rt-stats}
+rt_stats <- extract_model_stats(rt_model, "Response Time Model")
+rt_stats %>%
+  kable(
+    caption = "Response Time Model Coefficients",
+    col.names = c("Parameter", "Estimate", "Std. Error", "z-value", "p-value", "Significance"),
+    align = c("l", "r", "r", "r", "r", "c")
+  ) %>%
+  kable_styling(
+    bootstrap_options = c("striped", "hover"),
+    full_width = TRUE,
+    font_size = 12
+  ) %>%
+  column_spec(6, color = "red", bold = TRUE)
+```
+
+**Key Findings:**
+- ⏱️ **Stimulus Noise:** High noise trials show significantly longer RTs (z = 70.35, p < 0.001)
+- ⚡ **Trial Validity:** Invalid trials show shorter RTs (z = -5.87, p < 0.001)
+- 🔄 **Learning:** Validity effects change with learning (interaction: z = -3.26, p = 0.001)
+
+**Interpretation:** Task difficulty (noise) increases response times, while invalid trials (surprising outcomes) lead to faster responses, possibly due to surprise or reduced confidence.
+
+```{r rt-plot, fig.cap="Response Time Model Predictions: Stimulus Noise × Trial Validity × Trials Since Reversal"}
+knitr::include_graphics("../results/figures/glmm_models/glmm_rt_model.png")
+```
+
+---
+
+### 4. Confidence Model (All Trials)
+
+**Research Question:** How do trial validity and stimulus noise affect confidence ratings?
+
+```{r confidence-stats}
+confidence_stats <- extract_model_stats(confidence_model, "Confidence Model")
+confidence_stats %>%
+  kable(
+    caption = "Confidence Model Coefficients",
+    col.names = c("Parameter", "Estimate", "Std. Error", "z-value", "p-value", "Significance"),
+    align = c("l", "r", "r", "r", "r", "c")
+  ) %>%
+  kable_styling(
+    bootstrap_options = c("striped", "hover"),
+    full_width = TRUE,
+    font_size = 12
+  ) %>%
+  column_spec(6, color = "red", bold = TRUE)
+```
+
+**Key Findings:**
+- 😰 **Stimulus Noise:** High noise trials show significantly lower confidence (z = -127.10, p < 0.001)
+- 💪 **Trial Validity:** Valid trials show higher confidence (z = 2.60, p = 0.009)
+- 😊 **Face Emotion:** Happy faces show higher confidence (z = 18.35, p < 0.001)
+- 🔄 **Learning:** Validity effects change with learning (interaction: z = 3.50, p < 0.001)
+
+**Interpretation:** Participants are less confident when faces are ambiguous (high noise) and more confident when cues correctly predict outcomes. Happy faces generally elicit higher confidence.
+
+```{r confidence-plot, fig.cap="Confidence Model Predictions: Trial Validity × Stimulus Noise × Trials Since Reversal"}
+knitr::include_graphics("../results/figures/glmm_models/glmm_confidence_model.png")
+```
+
+---
+
+## Model Comparison
+
+```{r model-comparison}
+fit_stats <- create_fit_stats()
+fit_stats %>%
+  kable(
+    caption = "Model Fit Statistics",
+    col.names = c("Model", "AIC", "BIC", "Log Likelihood", "N Observations", "N Subjects"),
+    align = c("l", "r", "r", "r", "r", "r")
+  ) %>%
+  kable_styling(
+    bootstrap_options = c("striped", "hover"),
+    full_width = TRUE,
+    font_size = 12
+  )
+```
+
+---
+
+## Key Findings Summary
+
+### Main Effects
+
+| Variable | Accuracy | Choice | Response Time | Confidence |
+|----------|----------|--------|---------------|------------|
+| **Trial Validity** | ✅ Higher for valid | ✅ Influences choice | ⚡ Faster for invalid | 💪 Higher for valid |
+| **Stimulus Noise** | - | - | ⏱️ Slower for high noise | 😰 Lower for high noise |
+| **Face Emotion** | ❌ Lower for happy | 😊 Strong preference | - | 😊 Higher for happy |
+| **Learning** | 🔄 Modulates validity | 🔄 Modulates choice | 🔄 Modulates validity | 🔄 Modulates validity |
+
+### Interaction Effects
+
+- **Validity × Learning:** Trial validity effects change with learning across all models
+- **Noise × Validity:** Noise effects interact with trial validity in RT and confidence
+- **Emotion × Validity:** Different patterns for happy vs angry faces
+
+---
+
+## Conclusions
+
+This analysis reveals robust evidence for **predictive processing** in emotion recognition:
+
+1. **Trial validity** consistently affects all dependent measures
+2. **Stimulus noise** primarily affects response times and confidence
+3. **Learning effects** are evident across all models
+4. **Face emotion** shows consistent effects on choice and confidence
+
+The results support the hypothesis that participants use **predictive cues** to guide their responses, with **learning effects** modulating these relationships over time.
+
+---
+
+*Report generated on `r Sys.Date()`*  
+*Analysis: CWT fMRI GLMM Study* 
