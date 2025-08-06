@@ -1,37 +1,53 @@
 # Documentation
 
-This directory contains GitHub-first documentation and reports for the CWT fMRI study.
+This directory contains reproducible reports for the CWT fMRI study.
 
-## Reports
+## GLMM Analysis Report
 
-### GLMM Analysis Report
+### Files
 
-- **`glmm_analysis_report.md`** - Clean, readable markdown report (GitHub renders natively)
-- **`glmm_analysis_report_embedded.md`** - Same report with embedded figures (self-contained)
+- **`glmm_report_simple.Rmd`** - R Markdown source file (reproducible)
+- **`glmm_report.html`** - Generated HTML report (self-contained, 2MB)
+- **`render_report.R`** - Script to regenerate the report
+- **`glmm_analysis_report.md`** - Static markdown version (GitHub-native)
+- **`glmm_analysis_report_embedded.md`** - Static version with embedded figures
 
-### Features
+### Recommended Approach: R Markdown
 
-✅ **GitHub-native rendering** - Markdown files render beautifully on GitHub  
-✅ **Clean and readable** - Focus on key findings, not clutter  
-✅ **Self-contained** - Embedded figures work when downloaded  
-✅ **Easy to maintain** - Simple markdown syntax  
-✅ **Collaborative** - Easy for others to read and contribute  
+**Use `glmm_report_simple.Rmd` for the best solution:**
+
+✅ **Fully Reproducible** - Loads models and generates statistics dynamically  
+✅ **Self-contained** - All figures embedded, works when downloaded  
+✅ **Professional Output** - Beautiful HTML with interactive tables  
+✅ **Easy to Update** - Just run `Rscript render_report.R` to regenerate  
+✅ **No Manual Editing** - Everything is programmatic  
 
 ### How to Use
 
-1. **View on GitHub**: Open `glmm_analysis_report_embedded.md` in your browser
-2. **Download**: The embedded version works offline with all figures
-3. **Edit**: Modify the markdown files to update the report
-
-### Regenerating with Embedded Figures
-
+#### Regenerate the Report
 ```bash
 cd docs
-Rscript embed_figures.R
+Rscript render_report.R
 ```
 
-This will create `glmm_analysis_report_embedded.md` with all figures embedded as base64.
+#### View the Report
+Open `glmm_report.html` in any web browser.
+
+### Features
+
+- **Dynamic Model Statistics** - Extracts coefficients and significance from pre-estimated models
+- **Interactive Tables** - Hover effects and professional styling
+- **Embedded Figures** - All plots included, no broken links
+- **Navigation** - Table of contents and section navigation
+- **Professional Styling** - Clean, modern appearance
+
+### Requirements
+
+- **R** with packages: `tidyverse`, `lme4`, `knitr`, `kableExtra`, `rmarkdown`
+- **Pandoc** (for HTML generation)
+
+The `render_report.R` script will check dependencies and generate the report.
 
 ---
 
-*This approach provides clean, readable reports that work perfectly on GitHub without complex dependencies.* 
+*This approach provides a truly reproducible, professional report that updates automatically with analysis changes.* 
