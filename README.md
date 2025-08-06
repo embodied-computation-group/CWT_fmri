@@ -1,5 +1,17 @@
 # CWT fMRI Project - Confidence Weighting Task
 
+[![View Report](https://img.shields.io/badge/📊-View%20GLMM%20Report-blue?style=for-the-badge&logo=github)](https://embodied-computation-group.github.io/CWT_fmri/docs/glmm_report.html)
+[![R](https://img.shields.io/badge/R-4.0+-blue?style=flat&logo=r)](https://www.r-project.org/)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+
+## 📊 Quick Access to Results
+
+**🎯 [View GLMM Analysis Report](https://embodied-computation-group.github.io/CWT_fmri/docs/glmm_report.html)**
+
+*Interactive report with model coefficients, fit statistics, and embedded figures. Features dark mode toggle for comfortable viewing.*
+
+---
+
 ## Overview
 
 This repository contains the analysis pipeline for a Continuous Wavelet Transform (CWT) fMRI study investigating the **confidence weighting task**. The project examines how participants learn to predict emotional faces based on predictive cues in a reversal learning paradigm, with a focus on confidence, accuracy, and response time measures.
@@ -152,6 +164,11 @@ Rscript render_report.R
 ```
 
 **View Online**: The report is hosted on GitHub Pages and can be viewed directly in your browser.
+
+### Repository Metadata
+- **Topics**: fMRI, neuroscience, psychology, statistics, GLMM, mixed-models, confidence, emotion-recognition, reversal-learning, R, reproducible-research
+- **Description**: CWT fMRI Study: Confidence Weighting Task Analysis with interactive GLMM reports
+- **Website**: https://embodied-computation-group.github.io/CWT_fmri/docs/glmm_report.html
 
 ## Key Variables
 

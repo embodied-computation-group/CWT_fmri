@@ -1,0 +1,15 @@
+CWT fMRI Study: Confidence Weighting Task Analysis
+
+Comprehensive analysis pipeline for a Continuous Wavelet Transform (CWT) fMRI study investigating confidence weighting in emotion recognition. Features GLMM analysis, computational modeling, and interactive reports.
+
+📊 View Results: https://embodied-computation-group.github.io/CWT_fmri/docs/glmm_report.html
+
+Key Features:
+• 202 participants, 53,592 trials
+• GLMM analysis with mixed-effects models
+• Reversal learning paradigm
+• Interactive HTML report with dark mode
+• Reproducible R Markdown pipeline
+• Computational modeling with hBayesDM
+
+Technologies: R, tidyverse, lme4, glmmTMB, rmarkdown 
