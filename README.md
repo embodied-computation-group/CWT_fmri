@@ -17,8 +17,6 @@ CWT_fmri/
 ├── glmer_analysis.R        # Main statistical analysis script
 ├── run_anovas.R           # ANOVA analyses
 ├── computational_modeling.R # Reinforcement learning models (hBayesDM)
-├── trash.R                 # Computational modeling attempts (deprecated)
-├── trash2.R                # Additional modeling code (deprecated)
 └── .Rhistory              # R command history
 ```
 
