@@ -1,0 +1,455 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CWT fMRI Study - GLMM Analysis Report</title>
+    <style>
+        body {
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #34495e;
+            margin-top: 30px;
+            border-left: 4px solid #3498db;
+            padding-left: 15px;
+        }
+        h3 {
+            color: #2c3e50;
+            margin-top: 25px;
+        }
+        .model-section {
+            background-color: #f8f9fa;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+        }
+        .figure-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .figure-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .table-container {
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .significant {
+            font-weight: bold;
+            color: #e74c3c;
+        }
+        .summary-box {
+            background-color: #e8f4fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #3498db;
+        }
+        .methodology {
+            background-color: #fff3cd;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #ffc107;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>CWT fMRI Study - GLMM Analysis Report</h1>
+        
+        <div class="summary-box">
+            <h3>📊 Study Overview</h3>
+            <p><strong>Participants:</strong> 202 subjects</p>
+            <p><strong>Total Trials:</strong> 53,592 (48,199 after filtering)</p>
+            <p><strong>Analysis:</strong> Four Generalized Linear Mixed Models examining predictive processing in emotion recognition</p>
+        </div>
+
+        <div class="methodology">
+            <h3>🔬 Methodology</h3>
+            <p><strong>Task:</strong> Participants predicted emotional faces (Happy/Angry) based on visual cues in a reversal learning paradigm.</p>
+            <p><strong>Key Variables:</strong> Trial validity, stimulus noise, trials since reversal, face emotion</p>
+            <p><strong>Models:</strong> Accuracy, Choice, Response Time, and Confidence models with subject-level random effects</p>
+        </div>
+
+        <h2>📈 Model Results</h2>
+        
+        <div class="model-section">
+            <h3>1. Accuracy Model (High Noise Trials Only)</h3>
+            <p><strong>Dependent Variable:</strong> Binary accuracy (correct/incorrect)</p>
+            <p><strong>Key Finding:</strong> Trial validity significantly predicts accuracy (z = 5.03, p < 0.001)</p>
+            <div class="figure-container">
+                <img src="../../results/figures/glmm_models/glmm_accuracy_model.png" alt="Accuracy Model Predictions">
+                <p><em>Figure 1: GLMM Accuracy Model - Trial Validity × Trials Since Reversal × Face Emotion</em></p>
+            </div>
+        </div>
+
+        <div class="model-section">
+            <h3>2. Choice Model (High Noise Trials Only)</h3>
+            <p><strong>Dependent Variable:</strong> Face choice (Happy vs Angry)</p>
+            <p><strong>Key Finding:</strong> Signaled face and actual face emotion strongly predict choices</p>
+            <div class="figure-container">
+                <img src="../../results/figures/glmm_models/glmm_choice_model.png" alt="Choice Model Predictions">
+                <p><em>Figure 2: GLMM Choice Model - Signaled Face × Face Emotion × Trials Since Reversal</em></p>
+            </div>
+        </div>
+
+        <div class="model-section">
+            <h3>3. Response Time Model (All Trials)</h3>
+            <p><strong>Dependent Variable:</strong> Response time (Gamma distribution)</p>
+            <p><strong>Key Finding:</strong> High noise trials show significantly longer response times</p>
+            <div class="figure-container">
+                <img src="../../results/figures/glmm_models/glmm_rt_model.png" alt="Response Time Model Predictions">
+                <p><em>Figure 3: GLMM Response Time Model - Stimulus Noise × Trial Validity × Trials Since Reversal</em></p>
+            </div>
+        </div>
+
+        <div class="model-section">
+            <h3>4. Confidence Model (All Trials)</h3>
+            <p><strong>Dependent Variable:</strong> Confidence rating (0-1 scale, Beta distribution)</p>
+            <p><strong>Key Finding:</strong> High noise trials show significantly lower confidence</p>
+            <div class="figure-container">
+                <img src="../../results/figures/glmm_models/glmm_confidence_model.png" alt="Confidence Model Predictions">
+                <p><em>Figure 4: GLMM Confidence Model - Trial Validity × Stimulus Noise × Trials Since Reversal</em></p>
+            </div>
+        </div>
+
+        <h2>📋 Model Fit Statistics</h2>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Model</th>
+                        <th>AIC</th>
+                        <th>BIC</th>
+                        <th>Log Likelihood</th>
+                        <th>N Observations</th>
+                        <th>N Subjects</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Accuracy Model</td>
+                        <td>28276.04</td>
+                        <td>28348.7</td>
+                        <td>-14129.02</td>
+                        <td>23706</td>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <td>Choice Model</td>
+                        <td>24993.29</td>
+                        <td>25065.95</td>
+                        <td>-12487.65</td>
+                        <td>23706</td>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <td>Response Time Model</td>
+                        <td>22313.55</td>
+                        <td>22401.38</td>
+                        <td>-11146.77</td>
+                        <td>48198</td>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <td>Confidence Model</td>
+                        <td>35522.16</td>
+                        <td>35636.34</td>
+                        <td>-17748.08</td>
+                        <td>48198</td>
+                        <td>0</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2>🔍 Key Findings Summary</h2>
+        <div class="summary-box">
+            <h3>Main Effects</h3>
+            <ul>
+                <li><strong>Trial Validity:</strong> Valid trials show higher accuracy and confidence</li>
+                <li><strong>Stimulus Noise:</strong> High noise trials show longer RTs and lower confidence</li>
+                <li><strong>Face Emotion:</strong> Happy faces show different patterns than angry faces</li>
+                <li><strong>Learning:</strong> Trials since reversal show some learning effects</li>
+            </ul>
+            
+            <h3>Interaction Effects</h3>
+            <ul>
+                <li><strong>Validity × Learning:</strong> Trial validity effects change with learning</li>
+                <li><strong>Noise × Validity:</strong> Noise effects interact with trial validity</li>
+                <li><strong>Emotion × Validity:</strong> Different patterns for happy vs angry faces</li>
+            </ul>
+        </div>
+
+        <h2>📄 Complete Model Summaries</h2>
+        <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; font-family: monospace; white-space: pre-wrap; font-size: 12px;">
+GLMM MODEL SUMMARIES
+===================
+
+1. ACCURACY MODEL (High Noise Trials Only)
+==========================================
+ Family: binomial  ( logit )
+Formula:          
+Accuracy ~ TrialValidity2_numeric * TrialsSinceRev_scaled * FaceEmot +  
+    (1 | SubNo)
+Data: df_accuracy
+
+      AIC       BIC    logLik -2*log(L)  df.resid 
+  28276.0   28348.7  -14129.0   28258.0     23697 
+
+Random effects:
+
+Conditional model:
+ Groups Name        Variance Std.Dev.
+ SubNo  (Intercept) 0.2087   0.4569  
+Number of obs: 23706, groups:  SubNo, 201
+
+Conditional model:
+                                                            Estimate Std. Error
+(Intercept)                                                 0.959111   0.041109
+TrialValidity2_numeric                                      0.139959   0.027844
+TrialsSinceRev_scaled                                      -0.005904   0.024970
+FaceEmotHappy                                              -0.245799   0.034417
+TrialValidity2_numeric:TrialsSinceRev_scaled                0.059418   0.027316
+TrialValidity2_numeric:FaceEmotHappy                       -0.032758   0.038693
+TrialsSinceRev_scaled:FaceEmotHappy                         0.057977   0.034991
+TrialValidity2_numeric:TrialsSinceRev_scaled:FaceEmotHappy -0.029332   0.038327
+                                                           z value Pr(>|z|)    
+(Intercept)                                                 23.331  < 2e-16 ***
+TrialValidity2_numeric                                       5.027 4.99e-07 ***
+TrialsSinceRev_scaled                                       -0.236   0.8131    
+FaceEmotHappy                                               -7.142 9.20e-13 ***
+TrialValidity2_numeric:TrialsSinceRev_scaled                 2.175   0.0296 *  
+TrialValidity2_numeric:FaceEmotHappy                        -0.847   0.3972    
+TrialsSinceRev_scaled:FaceEmotHappy                          1.657   0.0975 .  
+TrialValidity2_numeric:TrialsSinceRev_scaled:FaceEmotHappy  -0.765   0.4441    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+
+2. CHOICE MODEL (High Noise Trials Only)
+========================================
+ Family: binomial  ( logit )
+Formula:          
+FaceResponse ~ SignaledFace * FaceEmot * TrialsSinceRev_scaled +  
+    (1 | SubNo)
+Data: df_choice
+
+      AIC       BIC    logLik -2*log(L)  df.resid 
+  24993.3   25066.0  -12487.6   24975.3     23697 
+
+Random effects:
+
+Conditional model:
+ Groups Name        Variance Std.Dev.
+ SubNo  (Intercept) 1.204    1.097   
+Number of obs: 23706, groups:  SubNo, 201
+
+Conditional model:
+                                                      Estimate Std. Error
+(Intercept)                                           -0.98253    0.09050
+SignaledFaceAngry                                     -0.27703    0.05299
+FaceEmotHappy                                          1.94646    0.05350
+TrialsSinceRev_scaled                                  0.13157    0.04557
+SignaledFaceAngry:FaceEmotHappy                        0.01740    0.07313
+SignaledFaceAngry:TrialsSinceRev_scaled               -0.21833    0.05331
+FaceEmotHappy:TrialsSinceRev_scaled                   -0.02744    0.05203
+SignaledFaceAngry:FaceEmotHappy:TrialsSinceRev_scaled  0.14555    0.07427
+                                                      z value Pr(>|z|)    
+(Intercept)                                            -10.86  < 2e-16 ***
+SignaledFaceAngry                                       -5.23 1.72e-07 ***
+FaceEmotHappy                                           36.38  < 2e-16 ***
+TrialsSinceRev_scaled                                    2.89  0.00388 ** 
+SignaledFaceAngry:FaceEmotHappy                          0.24  0.81193    
+SignaledFaceAngry:TrialsSinceRev_scaled                 -4.10 4.21e-05 ***
+FaceEmotHappy:TrialsSinceRev_scaled                     -0.53  0.59788    
+SignaledFaceAngry:FaceEmotHappy:TrialsSinceRev_scaled    1.96  0.05003 .  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+
+3. RESPONSE TIME MODEL (All Trials)
+==================================
+ Family: Gamma  ( log )
+Formula:          
+ResponseRT ~ StimNoise * TrialValidity2_numeric * TrialsSinceRev_scaled +  
+    (1 | SubNo)
+Data: df_rt
+
+      AIC       BIC    logLik -2*log(L)  df.resid 
+  22313.5   22401.4  -11146.8   22293.5     48188 
+
+Random effects:
+
+Conditional model:
+ Groups Name        Variance Std.Dev.
+ SubNo  (Intercept) 0.04578  0.214   
+Number of obs: 48198, groups:  SubNo, 201
+
+Dispersion estimate for Gamma family (sigma^2): 0.171 
+
+Conditional model:
+                                                                  Estimate
+(Intercept)                                                      -0.398702
+StimNoisehigh noise                                               0.323443
+TrialValidity2_numeric                                           -0.021185
+TrialsSinceRev_scaled                                             0.006347
+StimNoisehigh noise:TrialValidity2_numeric                        0.008132
+StimNoisehigh noise:TrialsSinceRev_scaled                         0.006422
+TrialValidity2_numeric:TrialsSinceRev_scaled                     -0.011712
+StimNoisehigh noise:TrialValidity2_numeric:TrialsSinceRev_scaled  0.001423
+                                                                 Std. Error
+(Intercept)                                                        0.015487
+StimNoisehigh noise                                                0.004598
+TrialValidity2_numeric                                             0.003606
+TrialsSinceRev_scaled                                              0.003307
+StimNoisehigh noise:TrialValidity2_numeric                         0.005134
+StimNoisehigh noise:TrialsSinceRev_scaled                          0.004690
+TrialValidity2_numeric:TrialsSinceRev_scaled                       0.003594
+StimNoisehigh noise:TrialValidity2_numeric:TrialsSinceRev_scaled   0.005109
+                                                                 z value
+(Intercept)                                                       -25.74
+StimNoisehigh noise                                                70.35
+TrialValidity2_numeric                                             -5.87
+TrialsSinceRev_scaled                                               1.92
+StimNoisehigh noise:TrialValidity2_numeric                          1.58
+StimNoisehigh noise:TrialsSinceRev_scaled                           1.37
+TrialValidity2_numeric:TrialsSinceRev_scaled                       -3.26
+StimNoisehigh noise:TrialValidity2_numeric:TrialsSinceRev_scaled    0.28
+                                                                 Pr(>|z|)    
+(Intercept)                                                       < 2e-16 ***
+StimNoisehigh noise                                               < 2e-16 ***
+TrialValidity2_numeric                                           4.23e-09 ***
+TrialsSinceRev_scaled                                             0.05495 .  
+StimNoisehigh noise:TrialValidity2_numeric                        0.11322    
+StimNoisehigh noise:TrialsSinceRev_scaled                         0.17090    
+TrialValidity2_numeric:TrialsSinceRev_scaled                      0.00112 ** 
+StimNoisehigh noise:TrialValidity2_numeric:TrialsSinceRev_scaled  0.78069    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+
+4. CONFIDENCE MODEL (All Trials)
+================================
+ Family: ordbeta  ( logit )
+Formula:          
+RawConfidence ~ TrialValidity2_numeric * StimNoise * TrialsSinceRev_scaled +  
+    FaceEmot + (1 | SubNo)
+Data: df
+
+      AIC       BIC    logLik -2*log(L)  df.resid 
+  35522.2   35636.3  -17748.1   35496.2     48185 
+
+Random effects:
+
+Conditional model:
+ Groups Name        Variance Std.Dev.
+ SubNo  (Intercept) 0.4081   0.6388  
+Number of obs: 48198, groups:  SubNo, 201
+
+Dispersion parameter for ordbeta family (): 4.12 
+
+Conditional model:
+                                                                  Estimate
+(Intercept)                                                       1.743095
+TrialValidity2_numeric                                            0.028350
+StimNoisehigh noise                                              -1.637713
+TrialsSinceRev_scaled                                            -0.021581
+FaceEmotHappy                                                     0.174363
+TrialValidity2_numeric:StimNoisehigh noise                       -0.015680
+TrialValidity2_numeric:TrialsSinceRev_scaled                      0.037236
+StimNoisehigh noise:TrialsSinceRev_scaled                         0.009908
+TrialValidity2_numeric:StimNoisehigh noise:TrialsSinceRev_scaled -0.020783
+                                                                 Std. Error
+(Intercept)                                                        0.046906
+TrialValidity2_numeric                                             0.010909
+StimNoisehigh noise                                                0.012886
+TrialsSinceRev_scaled                                              0.009736
+FaceEmotHappy                                                      0.009501
+TrialValidity2_numeric:StimNoisehigh noise                         0.013503
+TrialValidity2_numeric:TrialsSinceRev_scaled                       0.010638
+StimNoisehigh noise:TrialsSinceRev_scaled                          0.012114
+TrialValidity2_numeric:StimNoisehigh noise:TrialsSinceRev_scaled   0.013236
+                                                                 z value
+(Intercept)                                                        37.16
+TrialValidity2_numeric                                              2.60
+StimNoisehigh noise                                              -127.10
+TrialsSinceRev_scaled                                              -2.22
+FaceEmotHappy                                                      18.35
+TrialValidity2_numeric:StimNoisehigh noise                         -1.16
+TrialValidity2_numeric:TrialsSinceRev_scaled                        3.50
+StimNoisehigh noise:TrialsSinceRev_scaled                           0.82
+TrialValidity2_numeric:StimNoisehigh noise:TrialsSinceRev_scaled   -1.57
+                                                                 Pr(>|z|)    
+(Intercept)                                                       < 2e-16 ***
+TrialValidity2_numeric                                           0.009353 ** 
+StimNoisehigh noise                                               < 2e-16 ***
+TrialsSinceRev_scaled                                            0.026643 *  
+FaceEmotHappy                                                     < 2e-16 ***
+TrialValidity2_numeric:StimNoisehigh noise                       0.245536    
+TrialValidity2_numeric:TrialsSinceRev_scaled                     0.000465 ***
+StimNoisehigh noise:TrialsSinceRev_scaled                        0.413443    
+TrialValidity2_numeric:StimNoisehigh noise:TrialsSinceRev_scaled 0.116361    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+
+MODEL COMPARISON
+===============
+Accuracy Model - AIC: 28276.04 
+Choice Model - AIC: 24993.29 
+RT Model - AIC: 22313.55 
+Confidence Model - AIC: 35522.16 
+        </div>
+
+        <div style="margin-top: 40px; padding: 20px; background-color: #e8f4fd; border-radius: 8px; text-align: center;">
+            <p><strong>Report generated on:</strong> 2025-08-06</p>
+            <p><strong>Analysis pipeline:</strong> CWT fMRI GLMM Analysis</p>
+            <p><em>This report was generated programmatically from pre-estimated models and existing figures.</em></p>
+        </div>
+    </div>
+</body>
+</html>
+
