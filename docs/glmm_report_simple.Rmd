@@ -68,7 +68,7 @@ extract_model_stats <- function(model, model_name) {
     if (p < 0.001) {
       format(p, scientific = TRUE, digits = 3)
     } else {
-      format(p, scientific = FALSE, digits = 4)
+      format(p, scientific = FALSE, digits = 5)
     }
   })
   
@@ -144,7 +144,9 @@ accuracy_stats %>%
     full_width = TRUE,
     font_size = 12
   ) %>%
-  column_spec(6, color = "red", bold = TRUE)
+  column_spec(1, width = "25%") %>%
+  column_spec(2:5, width = "15%") %>%
+  column_spec(6, width = "10%")
 ```
 
 **Key Findings:**
@@ -184,7 +186,9 @@ choice_stats %>%
     full_width = TRUE,
     font_size = 12
   ) %>%
-  column_spec(6, color = "red", bold = TRUE)
+  column_spec(1, width = "25%") %>%
+  column_spec(2:5, width = "15%") %>%
+  column_spec(6, width = "10%")
 ```
 
 **Key Findings:**
@@ -224,7 +228,9 @@ rt_stats %>%
     full_width = TRUE,
     font_size = 12
   ) %>%
-  column_spec(6, color = "red", bold = TRUE)
+  column_spec(1, width = "25%") %>%
+  column_spec(2:5, width = "15%") %>%
+  column_spec(6, width = "10%")
 ```
 
 **Key Findings:**
@@ -264,7 +270,9 @@ confidence_stats %>%
     full_width = TRUE,
     font_size = 12
   ) %>%
-  column_spec(6, color = "red", bold = TRUE)
+  column_spec(1, width = "25%") %>%
+  column_spec(2:5, width = "15%") %>%
+  column_spec(6, width = "10%")
 ```
 
 **Key Findings:**
