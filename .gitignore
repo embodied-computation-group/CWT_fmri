@@ -23,3 +23,5 @@ Thumbs.db
 # IDE files
 .vscode/
 .idea/ 
+# Subject reversal plots
+results/figures/basic_analysis/subject_reversal_plots/
